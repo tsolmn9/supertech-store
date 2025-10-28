@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id           String   @id @default(uuid())
+  firstname    String
+  lastname     String
+  orderAddress String
+  phoneNumber  String
+  email        String   @unique
+  password     String
+  clerkId      String   @unique
+  updatedAt    DateTime @updatedAt
+  createdAt    DateTime @default(now())
+  orders       Order[]
+}
+
+model Products {
+  id          String       @id @default(uuid())
+  price       Int
+  name        String
+  description String
+  imgUrl      String
+  categoryId  String?
+  category    Category?    @relation(fields: [categoryId], references: [id])
+  updatedAt   DateTime     @updatedAt
+  createdAt   DateTime     @default(now())
+  OrderItems  OrderItems[]
+}
+
+model Category {
+  id           String     @id @default(uuid())
+  categoryName String
+  categoryImg  String
+  products     Products[]
+  updatedAt    DateTime   @updatedAt
+  createdAt    DateTime   @default(now())
+}
+
+enum OrderState {
+  PENDING
+  DELIVERED
+  CANCELLED
+  INTRANSIT
+}
+
+model Order {
+  id           String       @id @default(uuid())
+  userId       String
+  user         Users        @relation(fields: [userId], references: [clerkId])
+  orderItems   OrderItems[]
+  orderAddress String
+  totalPrice   Int
+  currentState OrderState   @default(PENDING)
+  updatedAt    DateTime     @updatedAt
+  createdAt    DateTime     @default(now())
+}
+
+model OrderItems {
+  id        String   @id @default(uuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id])
+  product   Products @relation(fields: [productId], references: [id])
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+  productId String
+  quantity  Int
+}
