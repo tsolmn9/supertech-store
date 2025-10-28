@@ -3,23 +3,16 @@ import { NextResponse } from "next/server";
 
 export default clerkMiddleware(async (auth, req) => {
   const session = await auth();
-  console.log("Session claims:", session.sessionClaims);
-
   const path = new URL(req.url).pathname;
   const role = (session.sessionClaims?.metadata as { role?: string })?.role;
 
-  if (path.startsWith("/admin") && role !== "admin") {
-    return NextResponse.redirect(new URL("/", req.url));
-  }
+  console.log("Session claims:", session.sessionClaims);
+  console.log("Role:", role, "Path:", path);
 
-  return NextResponse.next();
-
-  if (
-    path.startsWith("/admin") &&
-    (session.sessionClaims?.metadata as { role?: string })?.role !== "admin"
-  ) {
-    return NextResponse.redirect(new URL("/", req.url));
-  }
+  // if (path.startsWith("/admin") && role !== "admin") {
+  //   return NextResponse.redirect(new URL("/", req.url));
+  // }
+  console.log(role);
 
   return NextResponse.next();
 });

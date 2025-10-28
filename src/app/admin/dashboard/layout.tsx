@@ -11,7 +11,6 @@ export default function AdminLayout({
     <ClerkProvider>
       <html lang="en">
         <body className="bg-gray-50 min-h-screen">
-          {/* энд admin navbar, sidebar гэх мэтийг байрлуулж болно */}
           <main className="p-6">{children}</main>
         </body>
       </html>
